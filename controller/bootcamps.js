@@ -9,6 +9,7 @@ const dotenv = require("dotenv").config({ path: "./config/config.env" });
 
 exports.getBotCamps = asyncHandler(async (req, res, next) => {
   let query;
+  // sjjj?\
   // copy query
   const reqQuery = { ...req.query };
 
