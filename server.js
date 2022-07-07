@@ -8,10 +8,15 @@ const logger = require("morgan");
 const dbConnection = require("./config/db");
 const errorHandler = require("./middleware/error");
 const fileupload = require("express-fileupload");
+const authRouter = require("./routes/auth");
+const cookieParser = require("cookie-parser");
 
 // logger Middleware
 app.use(logger("tiny"));
+// body Parser
 app.use(express.json());
+// cookie Parser
+app.use(cookieParser());
 
 // fileupload Middleware
 app.use(fileupload());
@@ -25,6 +30,7 @@ dbConnection();
 // Routers
 app.use(bootcampRouter);
 app.use(courseRouter);
+app.use("/api/v1/auth", authRouter);
 
 // Error Handler
 app.use(errorHandler);

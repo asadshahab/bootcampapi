@@ -4,64 +4,12 @@ const Bootcamps = require("../models/Bootcamps");
 const ErrorResponse = require("../utils/errorResponse");
 const geocoder = require("../utils/geocoder");
 const dotenv = require("dotenv").config({ path: "./config/config.env" });
+const advancedResult = require("../middleware/advancedResultes");
 
 //  For Finding the BootCamps
 
 exports.getBotCamps = asyncHandler(async (req, res, next) => {
-  let query;
-  // copy query
-  const reqQuery = { ...req.query };
-
-  //  Fields Exclude
-  const removeFileds = ["select", "sort", "page", "limit"];
-
-  // Loop on  removeFields and Delete From req Query
-  removeFileds.forEach((param) => delete reqQuery[param]);
-
-  let queryStr = JSON.stringify(reqQuery);
-  queryStr = queryStr.replace(/\b(gte|gt|lte|lt|in)\b/g, (match) => `$${match}`);
-
-  // Finding Resource
-  query = Bootcamps.find(JSON.parse(queryStr)).populate("courses");
-
-  // select Fields
-  if (req.query.select) {
-    const fields = req.query.select.split(",").join(" ");
-    query = query.select(fields);
-  }
-  // Sort
-  if (req.query.sort) {
-    const sortBy = req.query.sort.split(",").join(" ");
-    query = query.sort(sortBy);
-  } else {
-    query = query.sort("name");
-  }
-
-  // pagination
-  const page = parseInt(req.query.page, 10) || 1;
-  const limit = parseInt(req.query.limit, 10) || 1;
-  const skip = (page - 1) * limit;
-  const endIndex = page * limit;
-  const total = await Bootcamps.countDocuments();
-  query = query.skip(skip).limit(limit);
-
-  const bootcamps = await query;
-  // const bootcamps= await Bootcamps.find(req.query)
-  // pagination Result
-  const pagination = {};
-  if (endIndex < total) {
-    pagination.next = {
-      page: page + 1,
-      limit,
-    };
-  }
-  if (endIndex > 0) {
-    pagination.prev = {
-      page: page - 1,
-      limit,
-    };
-  }
-  res.status(200).json({ sucess: true, count: bootcamps.length, pagination, data: bootcamps });
+  res.status(200).json(res.advanceResults);
 });
 
 // Finding The Sigle BootCampe

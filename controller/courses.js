@@ -8,21 +8,16 @@ const asyncHandler = require("../middleware/asynce");
 // @access  Public
 
 exports.getCourses = asyncHandler(async (req, res, next) => {
-  let query;
   if (req.query.bootcampId) {
-    query = Courses.find({ bootcamp: req.query.bootcampId });
-  } else {
-    query = Courses.find().populate({
-      path: "bootcamp",
-      select: "name description",
+    const courses = await Courses.find({ bootcamp: req.query.bootcampId });
+    return res.status(200).json({
+      success: true,
+      count: courses.length,
+      data: courses,
     });
+  } else {
+    return res.status(200).json(res.advanceResults);
   }
-  const courses = await query;
-  res.status(200).json({
-    success: true,
-    count: courses.length,
-    data: courses,
-  });
 });
 
 // Get single course
