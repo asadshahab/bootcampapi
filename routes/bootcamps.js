@@ -45,9 +45,5 @@ bootcampRouter.get(
   "/api/v1/bootcamp/radius/:zipcode/:distance",
   bootCampController.getBootcampsInRadius
 );
-bootcampRouter.put(
-  "/api/v1/bootcamp/:id/photo",
-  authorize("admin", "publisher"),
-  bootCampController.bootcampPhotoUpload
-);
+bootcampRouter.put("/api/v1/bootcamp/:id/photo", bootCampController.bootcampPhotoUpload);
 module.exports = bootcampRouter;

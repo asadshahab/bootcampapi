@@ -22,5 +22,6 @@ courseRouter.put(
   bootCampController.updateCourse
 );
 courseRouter.delete("/api/v1/course/:id", protect, bootCampController.deleteCourse);
+courseRouter.post("/api/v1/:bootcampId/course", protect, bootCampController.addCourse);
 
 module.exports = courseRouter;
