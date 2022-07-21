@@ -9,6 +9,7 @@ const dbConnection = require("./config/db");
 const errorHandler = require("./middleware/error");
 const fileupload = require("express-fileupload");
 const authRouter = require("./routes/auth");
+const userRouter = require("./routes/users");
 const cookieParser = require("cookie-parser");
 
 // logger Middleware
@@ -31,6 +32,7 @@ dbConnection();
 app.use(bootcampRouter);
 app.use(courseRouter);
 app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/user", userRouter);
 
 // Error Handler
 app.use(errorHandler);

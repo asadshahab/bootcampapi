@@ -18,14 +18,19 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
   // Make Sure Token Is Exist
   if (!token) {
+    console.log("no TOken");
     return next(new ErrorResponse("Not Authorize to Access this Route ", 401));
   }
   try {
     // verify Token
+    console.log(token, process.env.JWT_SECRET);
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log(decoded, "decoded");
     req.user = await User.findById(decoded.id);
+    console.log(req.user, "user");
     next();
   } catch (err) {
+    console.log("error");
     return next(new ErrorResponse("Not Authorize to Access this Route", 401));
   }
 });
