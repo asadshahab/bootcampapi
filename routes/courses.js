@@ -7,21 +7,16 @@ const advancedResult = require("../middleware/advancedResultes");
 const { protect, authorize } = require("../middleware/auth");
 
 courseRouter.get(
-  "/api/v1/courses",
+  "/",
   advancedResult(Course, {
     path: "bootcamp",
     select: "name description",
   }),
   bootCampController.getCourses
 );
-courseRouter.get("/api/v1/course/:id", bootCampController.getCourse);
-courseRouter.put(
-  "/api/v1/course/:id",
-  protect,
-  authorize("admin", "publisher"),
-  bootCampController.updateCourse
-);
-courseRouter.delete("/api/v1/course/:id", protect, bootCampController.deleteCourse);
+courseRouter.get("/:id", bootCampController.getCourse);
+courseRouter.put("/:id", protect, authorize("admin", "publisher"), bootCampController.updateCourse);
+courseRouter.delete("/:id", protect, bootCampController.deleteCourse);
 courseRouter.post("/api/v1/:bootcampId/course", protect, bootCampController.addCourse);
 
 module.exports = courseRouter;

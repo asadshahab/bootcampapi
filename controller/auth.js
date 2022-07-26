@@ -4,6 +4,7 @@ const ErrorResponse = require("../utils/errorResponse");
 const asyncHandler = require("../middleware/asynce");
 const user = require("../models/user");
 const sendEmail = require("../utils/sendemail");
+const cookies = require("cookie-parser");
 
 // @des    Register User
 // @route  post api/v1/auth/register
@@ -45,6 +46,15 @@ exports.login = async (req, res, next) => {
     return next(new ErrorResponse("Invalid Credentials", 401));
   }
   sendTokenResponse(user, 200, res);
+};
+
+// logout the user
+exports.logout = async (req, res, next) => {
+  res.cookie("token", "none", {
+    expires: new Date(Date.now() + 10 * 1000),
+    httpOnly: true,
+  });
+  res.status(200).json({ success: true, data: {} });
 };
 
 // Get Token from Model, create cookie and send response

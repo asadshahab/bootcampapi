@@ -8,35 +8,34 @@ const { protect, authorize } = require("../middleware/auth");
 
 // include other resource routers
 const courseRouter = require("./courses");
-
-// re-route into other resource routers
-bootcampRouter.use("/:bootcampId/courses", courseRouter);
+const reviewRouter = require("./reviews");
 
 // Router of bootcamps
 bootcampRouter.get(
-  "/api/v1/bootcamp",
+  "/",
+  protect,
   advancedResult(Bootcamp, "courses"),
   bootCampController.getBotCamps
 );
 // bootcampRouter
 //   .route("/api/v1/bootcamp")
 //   .get(advancedResult(Bootcamp), bootCampController.getBotCamps);
-bootcampRouter.get("/api/v1/bootcamp/:id", bootCampController.getOneBotCamps);
+bootcampRouter.get("/:id", bootCampController.getOneBotCamps);
 // bootcampRouter.
 bootcampRouter.post(
-  "/api/v1/bootcamp",
+  "/",
   protect,
   authorize("admin", "publisher"),
   bootCampController.createBotCamps
 );
 bootcampRouter.put(
-  "/api/v1/bootcamp/:id",
+  "/:id",
   protect,
   authorize("admin", "publisher"),
   bootCampController.updateBotCamps
 );
 bootcampRouter.delete(
-  "/api/v1/bootcamp/:id",
+  "/:id",
   protect,
   authorize("admin", "publisher"),
   bootCampController.deleteBotCamps
@@ -45,5 +44,10 @@ bootcampRouter.get(
   "/api/v1/bootcamp/radius/:zipcode/:distance",
   bootCampController.getBootcampsInRadius
 );
-bootcampRouter.put("/api/v1/bootcamp/:id/photo", bootCampController.bootcampPhotoUpload);
+bootcampRouter.put(":id/photo", bootCampController.bootcampPhotoUpload);
+
+// re-route into other resource routers
+bootcampRouter.use("/:bootcampId/courses", courseRouter);
+bootcampRouter.use("/:bootcampId/reviews", reviewRouter);
+
 module.exports = bootcampRouter;

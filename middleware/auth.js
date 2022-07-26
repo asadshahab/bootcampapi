@@ -7,14 +7,15 @@ const User = require("../models/user");
 
 exports.protect = asyncHandler(async (req, res, next) => {
   let token;
-
   if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
+    // set Token for Bearer Token
     token = req.headers.authorization.split(" ")[1];
   }
+  // // Set Token for cookies
 
-  //   else if (req.cookie.token) {
-  //     token = req.cookie.token;
-  //   }
+  // else if (req.cookies.token) {
+  //   token = req.cookies.token;
+  // }
 
   // Make Sure Token Is Exist
   if (!token) {
@@ -23,14 +24,10 @@ exports.protect = asyncHandler(async (req, res, next) => {
   }
   try {
     // verify Token
-    console.log(token, process.env.JWT_SECRET);
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log(decoded, "decoded");
     req.user = await User.findById(decoded.id);
-    console.log(req.user, "user");
     next();
   } catch (err) {
-    console.log("error");
     return next(new ErrorResponse("Not Authorize to Access this Route", 401));
   }
 });

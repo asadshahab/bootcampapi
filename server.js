@@ -2,15 +2,14 @@ const path = require("path");
 const express = require("express");
 const dotenv = require("dotenv").config({ path: "./config/config.env" });
 const app = express();
-const bootcampRouter = require("./routes/bootcamps");
-const courseRouter = require("./routes/courses");
 const logger = require("morgan");
 const dbConnection = require("./config/db");
 const errorHandler = require("./middleware/error");
 const fileupload = require("express-fileupload");
-const authRouter = require("./routes/auth");
-const userRouter = require("./routes/users");
 const cookieParser = require("cookie-parser");
+const mongoSanitize = require("express-mongo-sanitize");
+const helmet = require("helmet");
+const router = require("./routes/index");
 
 // logger Middleware
 app.use(logger("tiny"));
@@ -19,6 +18,10 @@ app.use(express.json());
 // cookie Parser
 app.use(cookieParser());
 
+// sanitize Data
+app.use(mongoSanitize());
+// set SEcurity
+app.use(helmet());
 // fileupload Middleware
 app.use(fileupload());
 
@@ -28,11 +31,8 @@ app.use(express.static(path.join(__dirname, "public")));
 // DB Connection
 dbConnection();
 
-// Routers
-app.use(bootcampRouter);
-app.use(courseRouter);
-app.use("/api/v1/auth", authRouter);
-app.use("/api/v1/user", userRouter);
+// All Router
+app.use(router);
 
 // Error Handler
 app.use(errorHandler);
